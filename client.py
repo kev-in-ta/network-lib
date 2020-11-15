@@ -21,6 +21,7 @@ class ClWirelessClient:
         # Initiates various socket connections based on passed protocol
         if self.protocol == 'TCP':
             self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             self.socket.settimeout(10)
             self.socket.connect((host, port))
             print('Connected.')
@@ -30,11 +31,8 @@ class ClWirelessClient:
             self.socket.connect((host, port))
 
         elif self.protocol == 'BT':
-            self.sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
-            self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            self.sock.bind(('', 3))
-            self.sock.listen(1)
-            self.socket, self.address = self.sock.accept()
+            self.socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
+            self.socket.connect((host, port))
 
     def fnSendMessage(self, message):
         """
@@ -61,7 +59,7 @@ class ClWirelessClient:
         print('Closing Socket')
         try:
             self.socket.close()
-            self.sock.close()
+            self.socket.close()
         except Exception as e:
             print(e)
 
@@ -69,8 +67,13 @@ class ClWirelessClient:
 
 if __name__ == "__main__":
 
-    host = '192.168.43.14'
-    port = 65432
+    # TCP
+    # host = '192.168.43.14'
+    # port = 65432
+
+    # BT
+    host = '84:9f:b5:85:c1:91'
+    port = 3
 
     # Continously try to reconnect if connection fails
     while True:
@@ -79,13 +82,16 @@ if __name__ == "__main__":
 
         try:
             print('Connecting to computer...')
-            instWirelessClient = ClWirelessClient(host, port)
+            instWirelessClient = ClWirelessClient(host, port, protocol='BT')
             connectedStatus = True
+            print('Connected!')
 
             while True:
-                message = b'This is my message!'
+                print('Sending!')
+                message = b'This is my message! \n'
                 time.sleep(1)
                 instWirelessClient.fnSendMessage(message)
+                print('Sent!')
 
         except Exception as e:
             time.sleep(1)

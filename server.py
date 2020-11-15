@@ -8,7 +8,7 @@ class ClWirelessServer:
     Class for connecting to client
     """
 
-    def __init__(self, address, host, port, protocol = 'TCP'):
+    def __init__(self, host, port, protocol = 'TCP'):
         """
         Purpose:    Receives information regarding the port to listen to and creates a socket connection. This class
                     also decodes COBS.
@@ -36,13 +36,12 @@ class ClWirelessServer:
             print('Initialized.')
             self.socket.bind((host, port))
 
-        elif self.protocol =='BT':
-            self.socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
+        elif self.protocol == 'BT':
+            self.sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
+            self.sock.bind((host, port))
+            self.sock.listen(1)
+            self.socket, self.addr = self.sock.accept()
             print('Initialized.')
-            self.socket.connect((address, port))
-
-        # first message sent by pi is related to which sensors are active
-        self.activeSensors = self.socket.recv(24)
 
     def fnCOBSIntialClear(self):
         """
@@ -59,7 +58,6 @@ class ClWirelessServer:
             byte = self.socket.recv(1)
             print("Not 0")
 
-            # Clear out potential initial garbage
             pass
 
     def fnShutDown(self):
@@ -103,11 +101,12 @@ class ClWirelessServer:
 
 if __name__ == '__main__':
 
-    address = ''
     host= ''
-    port = 65432
+    port = 5
 
-    instWirelessServer = ClWirelessServer('', host, port)
+    print("Server created...")
+
+    instWirelessServer = ClWirelessServer(host, port, protocol='BT')
     instWirelessServer.fnCOBSIntialClear()
 
     while(True):
