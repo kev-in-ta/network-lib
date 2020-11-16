@@ -21,7 +21,7 @@ class ClWirelessClient:
         # Initiates various socket connections based on passed protocol
         if self.protocol == 'TCP':
             self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             self.socket.settimeout(10)
             self.socket.connect((host, port))
             print('Connected.')
@@ -32,6 +32,7 @@ class ClWirelessClient:
 
         elif self.protocol == 'BT':
             self.socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
+            self.socket.settimeout(10)
             self.socket.connect((host, port))
 
     def fnSendMessage(self, message):
@@ -69,11 +70,16 @@ if __name__ == "__main__":
 
     # TCP
     # host = '192.168.43.14'
-    # port = 65432
+    #host = '10.5.113.103'
+    #port = 64321
+    #commProtocol = 'TCP'
 
     # BT
-    host = '84:9f:b5:85:c1:91'
+    host = '54:8C:A0:A4:8E:A2' # Phone
+    #host = '84:9f:b5:85:c1:91'
+    #host = 'C8:34:8E:00:1B:33' #Surface Laptop
     port = 3
+    commProtocol = 'BT'
 
     # Continously try to reconnect if connection fails
     while True:
@@ -82,7 +88,7 @@ if __name__ == "__main__":
 
         try:
             print('Connecting to computer...')
-            instWirelessClient = ClWirelessClient(host, port, protocol='BT')
+            instWirelessClient = ClWirelessClient(host, port, protocol=commProtocol)
             connectedStatus = True
             print('Connected!')
 

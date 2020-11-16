@@ -102,11 +102,14 @@ class ClWirelessServer:
 if __name__ == '__main__':
 
     host= ''
-    port = 5
+    #port = 64321
+    #commProtocol = 'TCP'
+    port = 8
+    commProtocol = 'BT'
 
     print("Server created...")
 
-    instWirelessServer = ClWirelessServer(host, port, protocol='BT')
+    instWirelessServer = ClWirelessServer(host, port, protocol='TCP')
     instWirelessServer.fnCOBSIntialClear()
 
     while(True):
