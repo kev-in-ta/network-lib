@@ -103,14 +103,15 @@ if __name__ == '__main__':
 
     host= ''
     port = 64321
-    commProtocol = 'TCP'
+    commProtocol = 'UDP'
     #port = 3
     #commProtocol = 'BT'
 
     print("Server created...")
 
     instWirelessServer = ClWirelessServer(host, port, protocol=commProtocol)
-    instWirelessServer.fnCOBSIntialClear()
+    if(commProtocol != 'UDP'):
+        instWirelessServer.fnCOBSIntialClear()
 
     while(True):
         try:
@@ -118,5 +119,6 @@ if __name__ == '__main__':
             print("{}: {}".format(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), msg))
         except Exception as e:
             print("Message retrieval failed due to: {}".format(e))
-            instWirelessServer.fnCOBSIntialClear()
+            if (commProtocol != 'UDP'):
+                instWirelessServer.fnCOBSIntialClear()
 
