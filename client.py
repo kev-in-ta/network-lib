@@ -70,16 +70,16 @@ if __name__ == "__main__":
 
     # TCP
     # host = '192.168.43.14'
-    #host = '10.5.113.103'
-    #port = 64321
-    #commProtocol = 'TCP'
+    host = '10.5.113.103'
+    port = 64321
+    commProtocol = 'TCP'
 
     # BT
-    host = '54:8C:A0:A4:8E:A2' # Phone
+    #host = '54:8C:A0:A4:8E:A2' # Phone
     #host = '84:9f:b5:85:c1:91'
     #host = 'C8:34:8E:00:1B:33' #Surface Laptop
-    port = 3
-    commProtocol = 'BT'
+    #port = 3
+    #commProtocol = 'BT'
 
     # Continously try to reconnect if connection fails
     while True:
