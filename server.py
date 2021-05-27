@@ -66,6 +66,8 @@ class ClWirelessServer:
         """
 
         print("Disconnecting server.")
+        if self.protocol == 'TCP':
+            self.TCPSocket.close()
         self.socket.close()
         print("Disconnected server.")
 
@@ -103,7 +105,7 @@ if __name__ == '__main__':
 
     host= ''
     port = 64321
-    commProtocol = 'UDP'
+    commProtocol = 'TCP'
     #port = 3
     #commProtocol = 'BT'
 
@@ -117,8 +119,10 @@ if __name__ == '__main__':
         try:
             msg = instWirelessServer.fnRetieveMessage()
             print("{}: {}".format(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), msg))
+            if msg == 'Disconnected.':
+                instWirelessServer.fnShutDown()
+                instWirelessServer = ClWirelessServer(host, port, protocol=commProtocol)
+                if(commProtocol != 'UDP'):
+                    instWirelessServer.fnCOBSIntialClear()
         except Exception as e:
-            print("Message retrieval failed due to: {}".format(e))
-            if (commProtocol != 'UDP'):
-                instWirelessServer.fnCOBSIntialClear()
-
+            print("Message retrieval failed due to: {}".format(e)) 
