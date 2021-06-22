@@ -146,7 +146,7 @@ if __name__ == "__main__":
             if (commProtocol != 'UDP'):
                 instWirelessClient.fnCOBSIntialClear()
 
-    """
+"""
     # TCP
     # host = '192.168.43.14'
     #host = '10.5.119.18'
@@ -182,4 +182,4 @@ if __name__ == "__main__":
                 instWirelessClient.fnShutDown()
                 connectedStatus = False
             print(e)
-    """
+"""

@@ -66,6 +66,8 @@ class ClWirelessServer:
         """
 
         print("Disconnecting server.")
+        if self.protocol == 'TCP':
+            self.TCPSocket.close()
         self.socket.close()
         print("Disconnected server.")
 
@@ -149,7 +151,7 @@ if __name__ == '__main__':
                 connectedStatus = False
             print(e)
 
-    """
+"""
     host= ''
     port = 64321
     commProtocol = 'TCP'
@@ -175,4 +177,4 @@ if __name__ == '__main__':
             instWirelessServer = ClWirelessServer(host, port, protocol=commProtocol)
             if (commProtocol != 'UDP'):
                 instWirelessServer.fnCOBSIntialClear()
-    """
+"""
