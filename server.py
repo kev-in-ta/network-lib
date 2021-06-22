@@ -2,6 +2,7 @@ import socket
 import datetime
 from cobs import cobs
 import bluetooth
+import time
 
 class ClWirelessServer:
     """
@@ -16,7 +17,6 @@ class ClWirelessServer:
         """
 
         self.protocol = protocol
-        self.cobsMessage = ''  # Create variable for storing COBS decoded message
 
         if self.protocol == 'TCP':
             self.TCPSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -99,13 +99,60 @@ class ClWirelessServer:
         except Exception as e:
             print("Failed to decode message due to: {}".format(e))
 
+    def fnSendMessage(self, message):
+        """
+        Purpose:    send cobs encoded message to server device
+        Passed:     message to encode into byte string
+        """
+
+        # Encode message using constant oversized buffering
+        dataCobs = cobs.encode(message)
+
+        # Send encoded message through socket
+        self.socket.send(dataCobs)
+
+        # Send a 0 value to signal end of message
+        if self.protocol == ('TCP'):
+            self.socket.send(b'\x00')
+
 if __name__ == '__main__':
 
+    # TCP
+    host = ''
+    port = 64321
+    commProtocol = 'TCP'
+
+    # Continuously try to reconnect if connection fails
+    while True:
+
+        connectedStatus = False
+        instWirelessServer = None
+
+        try:
+            print('Creating server...')
+            instWirelessServer = ClWirelessServer(host, port, protocol=commProtocol)
+            connectedStatus = True
+            print('Server created...')
+
+            while True:
+                print('Sending!')
+                message = b'10.0, 10.0'
+                time.sleep(1)
+                instWirelessServer.fnSendMessage(message)
+                print('Sent!')
+
+        except Exception as e:
+            time.sleep(1)
+            # Shutdown sockets if necessary
+            if connectedStatus:
+                instWirelessServer.fnShutDown()
+                connectedStatus = False
+            print(e)
+
+    """
     host= ''
     port = 64321
-    commProtocol = 'UDP'
-    #port = 3
-    #commProtocol = 'BT'
+    commProtocol = 'TCP'
 
     print("Server created...")
 
@@ -116,9 +163,16 @@ if __name__ == '__main__':
     while(True):
         try:
             msg = instWirelessServer.fnRetieveMessage()
-            print("{}: {}".format(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), msg))
+            print("{}: {}".format(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), msg.decode('utf-8')))
+            if msg == 'Disconnected.':
+                instWirelessServer.fnShutDown()
+                instWirelessServer = ClWirelessServer(host, port, protocol=commProtocol)
+                if(commProtocol != 'UDP'):
+                    instWirelessServer.fnCOBSIntialClear()
         except Exception as e:
             print("Message retrieval failed due to: {}".format(e))
+            instWirelessServer.fnShutDown()
+            instWirelessServer = ClWirelessServer(host, port, protocol=commProtocol)
             if (commProtocol != 'UDP'):
                 instWirelessServer.fnCOBSIntialClear()
-
+    """
